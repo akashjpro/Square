@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "223141682160",
+    "firebase_url": "https://workahead-c90e0.firebaseio.com",
+    "project_id": "workahead-c90e0",
+    "storage_bucket": "workahead-c90e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223141682160:android:187af3f6ee6e3745",
+        "android_client_info": {
+          "package_name": "com.example.tmha.square"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223141682160-1dggkhf8auoot48moh3slcam9850lfoj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tmha.square",
+            "certificate_hash": "b5379df51dac01d8766f6ceea2f4b33f4c861a0b"
+          }
+        },
+        {
+          "client_id": "223141682160-ehanu6mt3aagj91r1pqhikl8kblq2f3h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw8VAL5NDF6-RN5TXhloNlWN6gKNLiNZ8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223141682160-ehanu6mt3aagj91r1pqhikl8kblq2f3h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

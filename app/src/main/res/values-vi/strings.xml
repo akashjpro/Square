@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Square</string>
+    <string name="nameProject">Tên dự án: </string>
+    <string name="conten_project">Nội dung dự án: </string>
+    <string name="startTime">Thời gian bắt đầu: </string>
+    <string name="timeCreate">Thời gian tạo: </string>
+    <string name="title_activity_login">Đăng nhập</string>
+    <string name="location">Vị trí: </string>
+    <string name="createBy">Người tạo: </string>
+    <string name="endTime">Thời gian kết thúc: </string>
+    <string name="forgot_password">Quên mật khẩu</string>
+    <string name="total_project">Tổng số:  </string>
+    <string name="address">"Địa chỉ: "</string>
+</resources>

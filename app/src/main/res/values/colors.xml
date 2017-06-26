@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorPrimaryV21">#07f964</color>
+    <color name="colorPrimaryDarkV21">#1ebe5c</color>
+    <color name="colorAccentV21">#d72f32</color>
+
+    <color name="colorRed">#ff0408</color>
+    <color name="colorBlue">#0138fc</color>
+
+    <!-- Background color toolbar -->
+    <color name="colorToolbarBackground">#2355f9</color>
+    <!-- Background color ploating button-->
+    <color name="colorFloatingBackground">#0b42f9</color>
+
+    <!--Background color button login-->
+    <color name="colorLoginButtonPress">#ce1bc5</color>
+    <color name="colorLoginButtonFocus">#00ff2a</color>
+    <color name="colorLoginButtonDefault">#cad632</color>
+</resources>

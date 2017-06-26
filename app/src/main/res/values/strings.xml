@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Square</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Đăng nhập</string>
+
+    <!-- Strings related to login -->
+    <!--<string name="prompt_email">Email</string>-->
+    <!--<string name="prompt_password">Password (optional)</string>-->
+    <!--<string name="action_sign_in">Sign in or register</string>-->
+    <!--<string name="action_sign_in_short">Sign in</string>-->
+    <!--<string name="error_invalid_email">This email address is invalid</string>-->
+    <!--<string name="error_invalid_password">This password is too short</string>-->
+    <!--<string name="error_incorrect_password">This password is incorrect</string>-->
+    <!--<string name="error_field_required">This field is required</string>-->
+    <!--<string name="permission_rationale">"Contacts permissions are needed for providing email-->
+    <!--completions."-->
+    <!--</string>-->
+
+    <!-- Underline textView-->
+    <string name="forgot_password"><u>Forgot password?</u></string>
+    <string name="create_account"><u>Create new account</u></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="nameProject">Tên dự án:</string>
+    <string name="conten_project">"Nội dung dự án: "</string>
+    <string name="startTime">"Thời gian khởi công: "</string>
+    <string name="endTime">"Thời gian kết thúc: "</string>
+    <string name="location">"Vị trí: "</string>
+    <string name="createBy">"Người tạo: "</string>
+    <string name="timeCreate">"Thời gian tạo: "</string>
+    <string name="total_project">"Tổng số: "</string>
+    <string name="address">Address:</string>
+
+
+    <string name="title_1" translatable="false">Cool card</string>
+    <string name="title_2" translatable="false">Ok card</string>
+    <string name="title_3" translatable="false">Bad card</string>
+    <string name="title_4" translatable="false">Ugly card</string>
+    <string name="text_1" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam eget ligula eu lectus lobortis condimentum.</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Square</string>
+    <string name="nameProject">Name project:  </string>
+    <string name="conten_project">Content project: </string>
+    <string name="startTime">Start time: </string>
+    <string name="timeCreate">Time create: </string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="location">Location: </string>
+    <string name="createBy">Create by</string>
+    <string name="endTime">EndTime: </string>
+    <string name="total_project">Total: </string>
+    <string name="address">"Address: "</string>
+</resources>
