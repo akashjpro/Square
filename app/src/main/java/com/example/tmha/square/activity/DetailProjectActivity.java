@@ -32,6 +32,7 @@ public class DetailProjectActivity extends AppCompatActivity {
     private int mIndex = 0;
     private int REQUEST_CODE_INSERT = 123;
     private int REQUEST_CODE_UPDATE = 124;
+    public int REQUEST_CODE_DELETE = 125;
 
 
     @Override
@@ -141,5 +142,19 @@ public class DetailProjectActivity extends AppCompatActivity {
             }
 
         }
+
+        if (requestCode == REQUEST_CODE_DELETE &&
+                resultCode == RESULT_OK ){
+              refresh();
+
+        }
+    }
+
+    public void refresh(){
+        mListReport.clear();
+        mRow = 10;
+        mIndex = 0;
+        mListReport = MainActivity.database.getLimitReport(mRow, mIndex, mProject.getmID());
+        mReportAdapter.notifyDataSetChanged();
     }
 }

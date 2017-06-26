@@ -1,4 +1,4 @@
-package com.example.tmha.square.Handler;
+package com.example.tmha.square.handler;
 
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;

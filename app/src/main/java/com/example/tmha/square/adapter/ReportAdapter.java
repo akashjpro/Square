@@ -1,6 +1,5 @@
 package com.example.tmha.square.adapter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.tmha.square.R;
+import com.example.tmha.square.activity.DetailProjectActivity;
 import com.example.tmha.square.activity.DetailReportActivity;
 import com.example.tmha.square.listener.ListenerItem;
 import com.example.tmha.square.model.Report;
@@ -27,9 +27,9 @@ import java.util.List;
 
 public class ReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     List<Report> mReportList;
-    Activity mContext;
+    DetailProjectActivity mContext;
 
-    public ReportAdapter(Activity mContext, List<Report> mReportList) {
+    public ReportAdapter(DetailProjectActivity mContext, List<Report> mReportList) {
         this.mReportList = mReportList;
         this.mContext = mContext;
     }
@@ -63,7 +63,7 @@ public class ReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("report", report);
                     intent.putExtra("bundle", bundle);
-                    mContext.startActivity(intent);
+                    mContext.startActivityForResult(intent, mContext.REQUEST_CODE_DELETE);
                 }
             });
 
