@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tmha.square.R;
+import com.example.tmha.square.fragment.DatePickerFragment;
+import com.example.tmha.square.listener.ListenerDatePicker;
 import com.example.tmha.square.model.Project;
 import com.example.tmha.square.utils.TimeUtils;
 import com.squareup.picasso.Picasso;
@@ -40,7 +44,8 @@ import java.util.Calendar;
  */
 
 
-public class CreateProjectAcivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+public class CreateProjectAcivity extends AppCompatActivity
+        implements SeekBar.OnSeekBarChangeListener{
 
     private TextView mTxtProgress;
     private EditText mEdtNameProject, mEdtContent;
@@ -115,6 +120,7 @@ public class CreateProjectAcivity extends AppCompatActivity implements SeekBar.O
         mImgSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //get name project
                 String name = mEdtNameProject.getText().toString().trim();
                 //check name
@@ -164,6 +170,53 @@ public class CreateProjectAcivity extends AppCompatActivity implements SeekBar.O
 
 
 
+            }
+        });
+
+        mEdtStartTime.addTextChangedListener(textWatcher);
+        mEdtEndTime.addTextChangedListener(textWatcher);
+
+
+
+        mEdtStartTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                final DatePickerFragment pickerFragment = new DatePickerFragment();
+                DatePickerFragment fragment
+                        = (DatePickerFragment) getFragmentManager()
+                        .findFragmentByTag("datePicker");
+                if(fragment != null) {
+                    return;
+                }else {
+                    pickerFragment.setListenerDatePicker(new ListenerDatePicker() {
+                        @Override
+                        public void onChangeTime(String date) {
+                            mEdtStartTime.setText(date);
+                        }
+                    });
+                    pickerFragment.show(getFragmentManager(), "datePicker");
+                }
+            }
+        });
+
+        mEdtEndTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                final DatePickerFragment pickerFragment = new DatePickerFragment();
+                DatePickerFragment fragment
+                        = (DatePickerFragment) getFragmentManager()
+                        .findFragmentByTag("datePicker");
+                if(fragment != null) {
+                    return;
+                }else {
+                    pickerFragment.setListenerDatePicker(new ListenerDatePicker() {
+                        @Override
+                        public void onChangeTime(String date) {
+                            mEdtEndTime.setText(date);
+                        }
+                    });
+                    pickerFragment.show(getFragmentManager(), "datePicker");
+                }
             }
         });
 
@@ -378,4 +431,22 @@ public class CreateProjectAcivity extends AppCompatActivity implements SeekBar.O
     public void onStopTrackingTouch(SeekBar seekBar) {
         mProgress = seekBar.getProgress();
     }
+
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 }
