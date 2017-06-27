@@ -18,21 +18,23 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/txtTitleReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Cau Binh Khanh"
+                android:textColor="@color/colorBlue" />
+
             <ImageView
+                android:layout_marginTop="5dp"
                 android:id="@+id/imgReport"
                 android:layout_width="160dp"
                 android:layout_height="140dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/binhkhanhbridge" />
 
-            <TextView
-                android:id="@+id/txtTitleReport"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="Cau Binh Khanh"
-                android:textColor="@color/colorBlue" />
 
         </LinearLayout>
 

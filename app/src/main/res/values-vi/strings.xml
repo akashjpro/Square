@@ -12,4 +12,5 @@
     <string name="forgot_password">Quên mật khẩu</string>
     <string name="total_project">Tổng số:  </string>
     <string name="address">"Địa chỉ: "</string>
+    <string name="progress">"Tiến độ: "</string>
 </resources>

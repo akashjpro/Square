@@ -27,6 +27,7 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String END_TIME         = "EndTime";
     private static final String CONTENT          = "Content";
     private static final String ADDRESS          = "Address";
+    private static final String LOCATION         = "Location";
     private static final String CREATE_BY        = "CreateBy";
     private static final String TIMRE_CREATE     = "TimeCreate";
     // DBName default save in folder: /data/data/package/database/project.sqlite
@@ -51,6 +52,7 @@ public class DBManager extends SQLiteOpenHelper {
             END_TIME     + " TEXT, " +
             CONTENT      + " TEXT, " +
             ADDRESS      + " TEXT, " +
+            LOCATION     + " TEXT, " +
             CREATE_BY    + " TEXT, " +
             TIMRE_CREATE + " TEXT)";
 
@@ -162,7 +164,8 @@ public class DBManager extends SQLiteOpenHelper {
                         cursor.getString(6),
                         cursor.getString(7),
                         cursor.getString(8),
-                        cursor.getString(9)
+                        cursor.getString(9),
+                        cursor.getString(10)
                 );
                 listproject.add(project);
             }
@@ -207,71 +210,6 @@ public class DBManager extends SQLiteOpenHelper {
             close();
         }
         return listReport;
-    }
-
-
-
-    /**
-     * get one project
-     * @param id
-     * @return
-     */
-    public Project getProject(String id){
-        Project project = new Project();
-        try {
-            openDB();
-            Cursor cursor
-                    = database.rawQuery("SELECT * FROM "
-                    + TABLE_PRỌJECT +
-                    " WHERE " + ID + " = " + id , null);
-            while(cursor.moveToNext()){
-                project = new Project(
-                        cursor.getInt(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getInt(3),
-                        cursor.getString(4),
-                        cursor.getString(5),
-                        cursor.getString(6),
-                        cursor.getString(7),
-                        cursor.getString(8),
-                        cursor.getString(9)
-                );
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally{
-            close();
-        }
-        return project;
-    }
-
-
-    public Report getReport(String id){
-        Report report = new Report();
-        try {
-            openDB();
-            Cursor cursor
-                    = database.rawQuery("SELECT * FROM "
-                    + TABLE_REPORT +
-                    " WHERE " + ID + " = " + id , null);
-            while(cursor.moveToNext()){
-                report = new Report(
-                        cursor.getInt(0),
-                        cursor.getInt(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4),
-                        cursor.getString(5),
-                        cursor.getString(6)
-                );
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally{
-            close();
-        }
-        return report;
     }
 
     /**
@@ -370,35 +308,6 @@ public class DBManager extends SQLiteOpenHelper {
         return result;
     }
 
-    public Integer getMaxIdProject(){
-        int id = 0;
-        try {
-            openDB();
-            Cursor cursor = database.rawQuery("SELECT MAX(Id) FROM Project ", null);
-            id = cursor.getInt(0);
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            close();
-        }
-        return  id;
-    }
-
-    public Integer getMaxIdReport(){
-        int id = 0;
-        try {
-            openDB();
-            Cursor cursor = database.rawQuery("SELECT MAX( "+ ID +" ) FROM " + TABLE_REPORT, null);
-            id = cursor.getInt(0);
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            close();
-        }
-        return  id;
-    }
-
-
 
     /**
      * get content values of project
@@ -414,6 +323,7 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(END_TIME, project.getmEndTime());
         values.put(CONTENT, project.getmProjectContent());
         values.put(ADDRESS, project.getmAddress());
+        values.put(LOCATION, project.getmLocation());
         values.put(CREATE_BY, project.getmCreateBy());
         values.put(TIMRE_CREATE, project.getmTimeCreate());
 

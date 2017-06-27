@@ -30,6 +30,7 @@ public class FullPhotoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home){
             onBackPressed();
+            overridePendingTransition(R.anim.scale_zoom_in, R.anim.scale_zoom_out);
         }
         return super.onOptionsItemSelected(item);
     }

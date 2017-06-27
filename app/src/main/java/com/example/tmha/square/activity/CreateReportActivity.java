@@ -47,6 +47,7 @@ public class CreateReportActivity extends AppCompatActivity implements ListenerI
     private ImageView mImgSave, mImgCancel;
     private int mIdProjet;
     private Report mReport;
+    private int mPosition;
     private int mIdReport = -1;
 
 
@@ -153,6 +154,7 @@ public class CreateReportActivity extends AppCompatActivity implements ListenerI
         Bundle bundle = getIntent().getBundleExtra("bundle");
         if (bundle != null) {
             mReport = (Report) bundle.getSerializable("report");
+            mPosition = bundle.getInt("position", -1);
 
             if(mReport != null) {
                 mIdProjet = mReport.getmIdProject();
@@ -195,6 +197,7 @@ public class CreateReportActivity extends AppCompatActivity implements ListenerI
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("report", report);
+                bundle.putInt("position", mPosition);
                 intent.putExtra("bundle", bundle);
                 setResult(RESULT_OK, intent);
                 finish();
@@ -213,10 +216,10 @@ public class CreateReportActivity extends AppCompatActivity implements ListenerI
                 Toast.makeText(CreateReportActivity.this,
                         "Add success",
                         Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
                 //get new report
                 ArrayList<Report> listReport = MainActivity.database.getLimitReport(1, 0, mIdProjet);
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
                 bundle.putSerializable("report", listReport.get(0));
                 intent.putExtra("bundle", bundle);
                 setResult(RESULT_OK, intent);
@@ -282,6 +285,11 @@ public class CreateReportActivity extends AppCompatActivity implements ListenerI
         }
         mListPath.remove(position);
         mPhotoAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLongClick(int position) {
+
     }
 
     @Override

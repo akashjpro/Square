@@ -17,12 +17,14 @@ import java.util.List;
  * Created by tmha on 6/23/2017.
  */
 
-public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
+public class PhotoAdapter extends
+        RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
     List<String> mListPath;
     Activity mContext;
     ListenerItem mListenerItem;
 
-    public PhotoAdapter(Activity mContext, List<String> mListPath, ListenerItem mListenerItem) {
+    public PhotoAdapter(Activity mContext, List<String> mListPath,
+                        ListenerItem mListenerItem) {
         this.mListPath = mListPath;
         this.mContext = mContext;
         this.mListenerItem = mListenerItem;
@@ -30,12 +32,15 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     @Override
     public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_photo, parent, false);
+        View view = LayoutInflater.from(mContext)
+                .inflate(R.layout.item_photo, parent, false);
         return new PhotoViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(PhotoViewHolder holder, final int position) {String path = mListPath.get(position);
+    public void onBindViewHolder(PhotoViewHolder holder,
+                                 final int position) {
+        String path = mListPath.get(position);
         if(!path.equals("000")){
             Picasso.with(mContext).load(path)
                     .error(android.R.drawable.stat_notify_error)

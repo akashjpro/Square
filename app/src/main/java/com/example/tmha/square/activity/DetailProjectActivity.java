@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.tmha.square.R;
@@ -18,11 +19,19 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static com.example.tmha.square.R.id.txtAddress;
+import static com.example.tmha.square.R.id.txtCreateBy;
+import static com.example.tmha.square.R.id.txtEndTime;
+import static com.example.tmha.square.R.id.txtNameProject;
+import static com.example.tmha.square.R.id.txtStartTime;
+import static com.example.tmha.square.R.id.txtTimeCreate;
+
 public class DetailProjectActivity extends AppCompatActivity {
 
-    TextView txtNameProject, txtStartTime, txtEndTime, txtContent,
-            txtCreateBy, txtTimeCreate, txtAddress;
-    ImageView imgPhoto;
+    TextView mTxtNameProject, mTxtStartTime, mTxtEndTime, mTxtContent,
+             mTxtCreateBy, mTxtTimeCreate, mTxtAddress, mTextProgress;
+    ImageView mImgPhoto;
+    ProgressBar mProgress;
 
     ArrayList<Report> mListReport;
     RecyclerView mRecyclerView;
@@ -31,7 +40,7 @@ public class DetailProjectActivity extends AppCompatActivity {
     private int mRow = 10;
     private int mIndex = 0;
     private int REQUEST_CODE_INSERT = 123;
-    private int REQUEST_CODE_UPDATE = 124;
+    public int  REQUEST_CODE_UPDATE = 124;
     public int REQUEST_CODE_DELETE = 125;
 
 
@@ -45,21 +54,24 @@ public class DetailProjectActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-
+        mTextProgress.setText(mProject.getmProgess() + "%");
+        mProgress.setProgress(mProject.getmProgess());
     }
 
     private void addControls() {
         getSupportActionBar().setTitle("Chi tiết project");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        txtNameProject = (TextView) findViewById(R.id.txtNameProject);
-        txtStartTime   = (TextView) findViewById(R.id.txtStartTime);
-        txtEndTime     = (TextView) findViewById(R.id.txtEndTime);
-        txtContent     = (TextView) findViewById(R.id.txtContentProject);
-        txtCreateBy    = (TextView) findViewById(R.id.txtCreateBy);
-        txtTimeCreate  = (TextView) findViewById(R.id.txtTimeCreate);
-        txtAddress     = (TextView) findViewById(R.id.txtAddress);
-        imgPhoto       = (ImageView) findViewById(R.id.imgProject);
+        mTxtNameProject = (TextView) findViewById(txtNameProject);
+        mTxtStartTime   = (TextView) findViewById(txtStartTime);
+        mTxtEndTime     = (TextView) findViewById(txtEndTime);
+        mTxtContent     = (TextView) findViewById(R.id.txtContentProject);
+        mTxtCreateBy    = (TextView) findViewById(txtCreateBy);
+        mTxtTimeCreate  = (TextView) findViewById(txtTimeCreate);
+        mTxtAddress     = (TextView) findViewById(txtAddress);
+        mImgPhoto       = (ImageView) findViewById(R.id.imgProject);
+        mTextProgress   = (TextView) findViewById(R.id.txtProgress);
+        mProgress       = (ProgressBar) findViewById(R.id.progress);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewListReport);
         LinearLayoutManager layoutManager
@@ -80,20 +92,20 @@ public class DetailProjectActivity extends AppCompatActivity {
         if (bundle != null) {
             mProject = (Project) bundle.getSerializable("project");
             if (mProject != null) {
-                txtNameProject.setText(mProject.getmProjectName());
-                txtStartTime.setText(mProject.getmStartTime());
-                txtEndTime.setText(mProject.getmEndTime());
-                txtContent.setText(mProject.getmProjectContent());
-                txtAddress.setText(mProject.getmAddress());
-                txtCreateBy.setText(mProject.getmCreateBy());
-                txtTimeCreate.setText(mProject.getmTimeCreate());
+                mTxtNameProject.setText(mProject.getmProjectName());
+                mTxtStartTime.setText(mProject.getmStartTime());
+                mTxtEndTime.setText(mProject.getmEndTime());
+                mTxtContent.setText(mProject.getmProjectContent());
+                mTxtAddress.setText(mProject.getmAddress());
+                mTxtCreateBy.setText(mProject.getmCreateBy());
+                mTxtTimeCreate.setText(mProject.getmTimeCreate());
 
                 String picPath = mProject.getmProjectPhoto();
                 Picasso.with(this).load(picPath)
                         .error(android.R.drawable.stat_notify_error)
-                        .into(imgPhoto);
+                        .into(mImgPhoto);
 
-                imgPhoto.setOnClickListener(new View.OnClickListener() {
+                mImgPhoto.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(DetailProjectActivity.this,
@@ -123,6 +135,7 @@ public class DetailProjectActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
+            overridePendingTransition(R.anim.right_in, R.anim.left_out);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -130,6 +143,8 @@ public class DetailProjectActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // get new report
         if (requestCode == REQUEST_CODE_INSERT &&
                 resultCode == RESULT_OK && data != null){
             Bundle bundle = data.getBundleExtra("bundle");
@@ -138,23 +153,46 @@ public class DetailProjectActivity extends AppCompatActivity {
                 mListReport.add(0, report);
                 mReportAdapter.notifyItemInserted(0);
                 mRecyclerView.scrollToPosition(0);
-                mIndex++;
+                mIndex++; // index increase after add new report
             }
 
         }
 
+        //delete report with position
         if (requestCode == REQUEST_CODE_DELETE &&
-                resultCode == RESULT_OK ){
-              refresh();
+                resultCode == RESULT_OK & data != null ){
+            Bundle bundle = data.getBundleExtra("bundle");
+            if(bundle != null){
+               if (bundle != null){
+                   int position = bundle.getInt("position");
+                   mListReport.remove(position);
+                   mReportAdapter.notifyDataSetChanged();
+                   mIndex--; //decrease index after delete report
+               }
+            }
 
+        }
+
+        if (requestCode == REQUEST_CODE_UPDATE &&
+                resultCode == RESULT_OK && data != null){
+            Bundle bundle = data.getBundleExtra("bundle");
+            if(bundle != null){
+                if (bundle != null){
+                    int position = bundle.getInt("position");
+                    Report report = (Report) bundle.getSerializable("report");
+                    mListReport.set(position, report);
+                    mReportAdapter.notifyItemChanged(position);
+                }
+            }
         }
     }
 
-    public void refresh(){
-        mListReport.clear();
-        mRow = 10;
-        mIndex = 0;
-        mListReport = MainActivity.database.getLimitReport(mRow, mIndex, mProject.getmID());
+    public void deleteReport(int position ){
+        mListReport.remove(position);
         mReportAdapter.notifyDataSetChanged();
+        mIndex--; //decrease index after delete report
     }
+
+
+
 }

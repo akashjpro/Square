@@ -7,14 +7,15 @@ import java.io.Serializable;
  */
 
 public class Project implements Serializable {
-    private  int mID;
+    private  int    mID;
     private  String mProjectName;
     private  String mProjectPhoto;
-    private  int mProgess;
+    private  int    mProgess;
     private  String mStartTime;
     private  String mEndTime;
     private  String mProjectContent;
     private  String mAddress;
+    private  String mLocation;
     private  String mCreateBy;
     private  String mTimeCreate;
 
@@ -41,7 +42,8 @@ public class Project implements Serializable {
                    String mProjectPhoto, int mProgess,
                    String mStartTime, String mEndTime,
                    String mProjectContent, String mAddress,
-                   String mCreateBy, String mTimeCreate) {
+                   String mLocation, String mCreateBy,
+                   String mTimeCreate) {
         this.mID = mID;
         this.mProjectName = mProjectName;
         this.mProjectPhoto = mProjectPhoto;
@@ -52,6 +54,7 @@ public class Project implements Serializable {
         this.mAddress = mAddress;
         this.mCreateBy = mCreateBy;
         this.mTimeCreate = mTimeCreate;
+        this.mLocation = mLocation;
     }
 
     public int getmID() {
@@ -132,5 +135,13 @@ public class Project implements Serializable {
 
     public void setmTimeCreate(String mTimeCreate) {
         this.mTimeCreate = mTimeCreate;
+    }
+
+    public String getmLocation() {
+        return mLocation;
+    }
+
+    public void setmLocation(String mLocation) {
+        this.mLocation = mLocation;
     }
 }

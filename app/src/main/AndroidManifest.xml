@@ -25,17 +25,18 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppThemeActionBar">
         <activity
-            android:name=".activity.LoginActivity"
-            android:theme="@style/AppThemeActionBar">
+            android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity" />
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.CreateProjectAcivity"
             android:theme="@style/AppThemeActionBar" />
@@ -55,14 +56,13 @@
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".activity.DetailProjectActivity"
-            android:theme="@style/AppThemeActionBar" />
+            android:name=".activity.DetailProjectActivity" />
         <activity
-            android:name=".activity.CreateReportActivity"
-            android:theme="@style/AppThemeActionBar" />
+            android:name=".activity.CreateReportActivity" />
         <activity
-            android:theme="@style/AppThemeActionBar"
-            android:name=".activity.FullPhotoActivity"></activity>
+            android:name=".activity.FullPhotoActivity" />
+        <activity
+            android:name=".activity.DetailReportActivity"></activity>
     </application>
 
 </manifest>

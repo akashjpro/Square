@@ -12,7 +12,9 @@ import android.widget.Toast;
 
 import com.example.tmha.square.R;
 import com.example.tmha.square.adapter.CardPhotoAdapter;
+import com.example.tmha.square.handler.ShadowTransformer;
 import com.example.tmha.square.model.Report;
+import com.github.clans.fab.FloatingActionMenu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,10 +31,9 @@ public class DetailReportActivity extends AppCompatActivity {
     private TextView mTxtTitle, mTxtContent,
             mTxtCreateBy, mTxtTimeCreate;
     private Report mReport;
+    private int mPosition;
 
-    private final int  REQUEST_CODE_EDIT = 111;
-
-
+    private FloatingActionMenu mFloatingActionButton;
 
 
 
@@ -46,25 +47,6 @@ public class DetailReportActivity extends AppCompatActivity {
 
     private void addEvents() {
         getData();
-
-        findViewById(R.id.floatingButtonEdit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DetailReportActivity.this, CreateReportActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("report", mReport);
-                intent.putExtra("bundle", bundle);
-                startActivityForResult(intent, REQUEST_CODE_EDIT);
-            }
-        });
-
-        findViewById(R.id.floatingButtonCreate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         findViewById(R.id.floatingButtonDelete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +72,11 @@ public class DetailReportActivity extends AppCompatActivity {
                             Toast.makeText(DetailReportActivity.this,
                                     "Delete success",
                                     Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK);
+                            Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("position", mPosition);
+                            intent.putExtra("bundle", bundle);
+                            setResult(RESULT_OK, intent);
                             dialog.dismiss();
                             finish();
                         }else {
@@ -111,6 +97,7 @@ public class DetailReportActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getBundleExtra("bundle");
         if (bundle != null){
             mReport = (Report) bundle.getSerializable("report");
+            mPosition = bundle.getInt("position", -1);
             setData(mReport);
 
         }
@@ -151,29 +138,16 @@ public class DetailReportActivity extends AppCompatActivity {
         mTxtContent = (TextView) findViewById(R.id.txtContent);
         mTxtCreateBy = (TextView) findViewById(R.id.txtCreateBy);
         mTxtTimeCreate = (TextView) findViewById(R.id.txtTimeCreate);
+        mFloatingActionButton = (FloatingActionMenu) findViewById(R.id.floatingActionMenu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home){
             onBackPressed();
+            overridePendingTransition(R.anim.right_in, R.anim.left_out);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_EDIT
-                && resultCode == RESULT_OK && data != null){
-            Bundle bundle = data.getBundleExtra("bundle");
-            if(bundle != null){
-                mListPath.clear();
-                Report report = (Report) bundle.getSerializable("report");
-                setData(report);
-                mCardPhotoAdapter.notifyDataSetChanged();
-            }
-        }
-    }
 }

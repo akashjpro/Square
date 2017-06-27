@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.example.tmha.square.R;
 import com.example.tmha.square.activity.MainActivity;
 import com.example.tmha.square.adapter.ProjectAdapter;
-import com.example.tmha.square.listener.ListenerReport;
+import com.example.tmha.square.listener.ListenerProject;
 import com.example.tmha.square.model.Project;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import static com.example.tmha.square.activity.MainActivity.database;
  */
 
 public class ReportFragment extends Fragment
-        implements ListenerReport{
+        implements ListenerProject {
     //private LinearLayoutManager mLayoutManager;
     private GridLayoutManager mGridLayoutManager;
     private RecyclerView mRecyclerView;

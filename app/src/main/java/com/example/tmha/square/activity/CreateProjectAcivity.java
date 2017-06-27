@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tmha.square.R;
@@ -38,13 +40,11 @@ import java.util.Calendar;
  */
 
 
-public class CreateProjectAcivity extends AppCompatActivity {
+public class CreateProjectAcivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
 
-
-
-
-    private EditText mEdtNameProject, mEdtContent,
-            mEdtStartTime, mEdtEndTime, mEdtAddress;
+    private TextView mTxtProgress;
+    private EditText mEdtNameProject, mEdtContent;
+    private EditText mEdtStartTime, mEdtEndTime, mEdtAddress;
     private ImageView mImgProject, mImgSave, mImgCancel;
     private Button mBtnSelectFile, mBtnCapture;
     private final int REQUEST_CODE_FOLDER = 111;
@@ -56,6 +56,8 @@ public class CreateProjectAcivity extends AppCompatActivity {
     private Project mProject;
     private String TAG = "log";
     private boolean isSaveImage = false;
+    private SeekBar mSeekBarProgress;
+    private int mProgress = 0;
 
 
     @Override
@@ -72,6 +74,8 @@ public class CreateProjectAcivity extends AppCompatActivity {
     private void addEvents() {
         //set data report
         setDataReport();
+
+        mSeekBarProgress.setOnSeekBarChangeListener(this);
 
         mBtnSelectFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,10 +154,11 @@ public class CreateProjectAcivity extends AppCompatActivity {
                 String timeCreate = TimeUtils.getCurrentTime();
                 String startTime = mEdtStartTime.getText().toString().trim();
                 String endTime   = mEdtEndTime.getText().toString().trim();
-                int progess = 50;
+                String location  = "10.802083, 106.639731";
+                int progess = mProgress;
                 Project project = new Project(mId, name, mCurrentPhotoPath,
                         progess, startTime, endTime, content,
-                        address, createBy, timeCreate );
+                        address, location, createBy, timeCreate );
                 //insert or update project
                 insertUpdateReport(project);
 
@@ -161,7 +166,9 @@ public class CreateProjectAcivity extends AppCompatActivity {
 
             }
         });
+
     }
+
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -217,7 +224,8 @@ public class CreateProjectAcivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
                 //get new project
-                ArrayList<Project> listProject = MainActivity.database.getLimitproject(1, 0);
+                ArrayList<Project> listProject
+                        = MainActivity.database.getLimitproject(1, 0);
                 bundle.putSerializable("project", listProject.get(0));
                 intent.putExtra("bundle", bundle);
                 setResult(RESULT_OK, intent);
@@ -258,6 +266,8 @@ public class CreateProjectAcivity extends AppCompatActivity {
                 mEdtEndTime.setText(mProject.getmEndTime());
                 mEdtContent.setText(mProject.getmProjectContent());
                 mEdtAddress.setText(mProject.getmAddress());
+                mTxtProgress.setText(mProject.getmProgess() + "%");
+                mSeekBarProgress.setProgress(mProject.getmProgess());
             }
 
         }
@@ -275,6 +285,8 @@ public class CreateProjectAcivity extends AppCompatActivity {
         mImgSave        = (ImageView) findViewById(R.id.imgSave);
         mImgCancel      = (ImageView) findViewById(R.id.imgCancel);
         mEdtAddress     = (EditText) findViewById(R.id.edtAddress);
+        mSeekBarProgress = (SeekBar) findViewById(R.id.seekBarProgress);
+        mTxtProgress    = (TextView) findViewById(R.id.txtProgress);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Create project");
@@ -324,6 +336,8 @@ public class CreateProjectAcivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
+            overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -348,5 +362,20 @@ public class CreateProjectAcivity extends AppCompatActivity {
     protected void onStop() {
         String path = mCurrentPhotoPath;
         super.onStop();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        mTxtProgress.setText(progress + "%");
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mProgress = seekBar.getProgress();
     }
 }

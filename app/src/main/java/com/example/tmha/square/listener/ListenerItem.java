@@ -6,4 +6,5 @@ package com.example.tmha.square.listener;
 
 public interface ListenerItem {
     void onClick(int position);
+    void onLongClick(int position);
 }

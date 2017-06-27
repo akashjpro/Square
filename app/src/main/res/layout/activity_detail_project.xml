@@ -94,7 +94,7 @@
                     android:text="Tiến độ: " />
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/txtProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -102,12 +102,11 @@
                     android:textColor="@color/colorRed" />
 
                 <ProgressBar
-                    android:id="@+id/progressBar2"
+                    android:id="@+id/progress"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="60dp"
-                    android:layout_weight="1"
                     android:progressDrawable="@drawable/custom_progess_bar"
                     android:secondaryProgress="50" />
 

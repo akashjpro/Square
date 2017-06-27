@@ -29,11 +29,11 @@
     <string name="title_activity_maps">Map</string>
     <string name="nameProject">Tên dự án:</string>
     <string name="conten_project">"Nội dung dự án: "</string>
-    <string name="startTime">"Thời gian khởi công: "</string>
+    <string name="startTime">"Start time: "</string>
     <string name="endTime">"Thời gian kết thúc: "</string>
     <string name="location">"Vị trí: "</string>
     <string name="createBy">"Người tạo: "</string>
-    <string name="timeCreate">"Thời gian tạo: "</string>
+    <string name="timeCreate">"Time create: "</string>
     <string name="total_project">"Tổng số: "</string>
     <string name="address">Address:</string>
 
@@ -43,4 +43,5 @@
     <string name="title_3" translatable="false">Bad card</string>
     <string name="title_4" translatable="false">Ugly card</string>
     <string name="text_1" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam eget ligula eu lectus lobortis condimentum.</string>
+    <string name="progress">"Progress: "</string>
 </resources>

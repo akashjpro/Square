@@ -95,7 +95,7 @@ public class CardPhotoAdapter extends PagerAdapter implements ListenerCard {
                 Intent intent = new Intent(mContext, FullPhotoActivity.class);
                 intent.putExtra("path", path);
                 mContext.startActivity(intent);
-                mContext.overridePendingTransition(R.anim.top_out, R.anim.scale_zoom_in);
+                mContext.overridePendingTransition(R.anim.scale_zoom_in, R.anim.scale_zoom_out);
             }
         });
 

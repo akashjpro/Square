@@ -11,4 +11,5 @@
     <string name="endTime">EndTime: </string>
     <string name="total_project">Total: </string>
     <string name="address">"Address: "</string>
+    <string name="progress">"Progress: "</string>
 </resources>

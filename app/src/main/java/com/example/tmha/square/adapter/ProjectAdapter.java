@@ -18,7 +18,7 @@ import com.example.tmha.square.activity.CreateProjectAcivity;
 import com.example.tmha.square.activity.DetailProjectActivity;
 import com.example.tmha.square.activity.MainActivity;
 import com.example.tmha.square.listener.ListenerItem;
-import com.example.tmha.square.listener.ListenerReport;
+import com.example.tmha.square.listener.ListenerProject;
 import com.example.tmha.square.model.Project;
 import com.squareup.picasso.Picasso;
 
@@ -32,13 +32,13 @@ public class ProjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private Activity mContext;
     private List<Project> mListProject;
-    private ListenerReport mListenerReport;
+    private ListenerProject mListenerReport;
     private final int VIEW_TYPE_ITEM = 0; // View item report
     private final int VIEW_TYPE_lOADING = 1; // view loading
     private boolean isLoad = false;
 
     public ProjectAdapter(Activity mContext, List<Project> mListProject
-            , ListenerReport listenerReport) {
+            , ListenerProject listenerReport) {
         this.mContext        = mContext;
         this.mListProject     = mListProject;
         this.mListenerReport = listenerReport;
@@ -85,21 +85,13 @@ public class ProjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             projectHolder.address.setText(project.getmAddress());
             projectHolder.timeProject.setText(project.getmTimeCreate());
             String picPath = project.getmProjectPhoto();
+            projectHolder.progress.setProgress(project.getmProgess());
+            projectHolder.txtProgress.setText(project.getmProgess() + "%");
 
 
             Picasso.with(mContext).load(picPath)
                     .error(android.R.drawable.stat_notify_error)
                     .into(projectHolder.imgProject);
-
-
-//            if(picPath != null){
-//                try {
-//                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), Uri.parse(picPath));
-//                    projectHolder.imgProject.setImageBitmap(bitmap);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
 
 
             projectHolder.imgMore.setOnClickListener(new View.OnClickListener() {
@@ -144,10 +136,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     mContext.startActivity(intent);
                     mContext.overridePendingTransition(R.anim.left_in, R.anim.right_out);
                 }
+
+                @Override
+                public void onLongClick(int position) {
+
+                }
             });
-        }else if (holder instanceof LoadingViewHoler){
-//            LoadingViewHoler loadingHoler = (LoadingViewHoler) holder;
-//            loadingHoler.prbBar.setIndeterminate(true);
         }
 
     }
@@ -160,8 +154,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class ProjectViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener{
-        TextView nameProject, timeProject, address, txtIndex;
+        TextView nameProject, timeProject, address, txtProgress;
         ImageView imgProject, imgMore;
+        ProgressBar progress;
         ListenerItem mListenerItem;
         public ProjectViewHolder(View itemView) {
             super(itemView);
@@ -171,6 +166,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             address         = (TextView) itemView.findViewById(R.id.txtAddress);
             imgProject      = (ImageView) itemView.findViewById(R.id.imgProject);
             imgMore         = (ImageView) itemView.findViewById(R.id.imgMore);
+            txtProgress     = (TextView) itemView.findViewById(R.id.txtProgress);
+            progress        = (ProgressBar) itemView.findViewById(R.id.progress);
             // txtIndex        = (TextView) itemView.findViewById(R.id.txtIndex);
         }
 
