@@ -41,6 +41,8 @@ import java.util.Calendar;
 public class CreateProjectAcivity extends AppCompatActivity {
 
 
+
+
     private EditText mEdtNameProject, mEdtContent,
             mEdtStartTime, mEdtEndTime, mEdtAddress;
     private ImageView mImgProject, mImgSave, mImgCancel;

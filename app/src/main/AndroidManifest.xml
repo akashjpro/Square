@@ -58,9 +58,6 @@
             android:name=".activity.DetailProjectActivity"
             android:theme="@style/AppThemeActionBar" />
         <activity
-            android:name=".activity.DetailReportActivity"
-            android:theme="@style/AppThemeActionBar" />
-        <activity
             android:name=".activity.CreateReportActivity"
             android:theme="@style/AppThemeActionBar" />
         <activity
