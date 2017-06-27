@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.tmha.square.R;
 import com.example.tmha.square.activity.DetailProjectActivity;
+import com.example.tmha.square.activity.DetailReportActivity;
 import com.example.tmha.square.listener.ListenerItem;
 import com.example.tmha.square.model.Report;
 import com.squareup.picasso.Picasso;
