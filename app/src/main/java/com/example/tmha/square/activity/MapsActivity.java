@@ -1,11 +1,18 @@
 package com.example.tmha.square.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -30,9 +37,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback{
@@ -46,6 +55,9 @@ public class MapsActivity extends FragmentActivity
     private ProgressDialog mProgressDialog;
     private LatLng mMyLatLng;
     private GPSTracker mGPS;
+    private Location mLocation;
+    private Geocoder mGeocoder;
+    private String mAddress;
 
     GoogleMap.OnMyLocationChangeListener listenerLocationChange = new GoogleMap.OnMyLocationChangeListener() {
         @Override
@@ -241,24 +253,69 @@ public class MapsActivity extends FragmentActivity
         }
         mMap.setMyLocationEnabled(true);
 
+        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                mMyLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                mLocation = location;
+            }
+        });
+
+        mGeocoder = new Geocoder(this, Locale.getDefault());
+
         mMap.setOnMyLocationButtonClickListener(
                 new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
-                mGPS = new GPSTracker(MapsActivity.this);
-                if(mGPS.canGetLocation()){
-                    double latitude = mGPS.getLatitude();
-                    double longitude = mGPS.getLongitude();
-                    // \n is for new line
-                    Toast.makeText(getApplicationContext(),
-                            "Your Location is - \nLat: "
-                                    + latitude + "\nLong: "
-                                    + longitude, Toast.LENGTH_LONG).show();
-                }else{
-                    // can't get location
-                    // GPS or Network is not enabled
-                    // Ask user to enable GPS/network in settings
-                    mGPS.showSettingsAlert();
+
+//                try {
+//                    //ben thanh
+//                    List<Address> addresses
+//                            = mGeocoder.getFromLocation(10.784783, 106.687736, 1);
+//                    //bitexco
+//                    List<Address> addresses1
+//                            = mGeocoder.getFromLocation(10.772321, 106.704402, 1);
+//
+//                    JSONArray jsonArray = new JSONArray(addresses);
+//
+//                    String s = jsonArray.toString();
+//
+//
+//                    String city = addresses.get(0).getAdminArea();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+
+                if (checkLocation()){
+                    if (mLocation != null){
+                        try {
+                            List<Address> addresses = mGeocoder
+                                    .getFromLocation(mMyLatLng.latitude,
+                                            mMyLatLng.longitude, 1);
+                            for (int i=0; i<5; i++){
+                                String address = addresses.get(0).getAddressLine(i);
+                                if (address != null){
+                                    if (mAddress != null){
+                                        mAddress +=  address + " ";
+                                    }else {
+                                        mAddress =  address + " ";
+                                    }
+                                }
+
+                            }
+                            if (mEdtOrigin.isFocused()){
+                                mEdtOrigin.setText(mAddress);
+                            }else {
+                                mEdtDestination.setText(mAddress);
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }else {
+                    showSettingsAlert();
                 }
                 return false;
             }
@@ -281,11 +338,54 @@ public class MapsActivity extends FragmentActivity
 
 
 
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
+    public boolean checkLocation(){
+
+        LocationManager locationManager
+                = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // getting GPS status
+        boolean isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+        // getting network status
+        boolean isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (isGPSEnabled ){
+            return true;
+        }
+        return false;
+    }
 
 
-}
+    public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS is settings");
+        // Setting Dialog Message
+        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+
+
+    }

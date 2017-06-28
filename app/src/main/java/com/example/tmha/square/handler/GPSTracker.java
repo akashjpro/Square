@@ -73,20 +73,22 @@ public class GPSTracker extends Service implements LocationListener {
                         // to handle the case where the user grants the permission. See the documentation
                         // for ActivityCompat#requestPermissions for more details.
 
+                    }else {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.NETWORK_PROVIDER,
+                                MIN_TIME_BW_UPDATES,
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                        Log.d("Network", "Network");
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                            if (location != null) {
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                            }
+                        }
                     }
-        locationManager.requestLocationUpdates(
-            LocationManager.NETWORK_PROVIDER,
-            MIN_TIME_BW_UPDATES,
-            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-        Log.d("Network", "Network");
-        if (locationManager != null) {
-        location = locationManager
-                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (location != null) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        }
-        }
+
         }
         // if GPS Enabled get lat/long using GPS Services
         if (isGPSEnabled) {
@@ -167,9 +169,9 @@ public void onClick(DialogInterface dialog,int which) {
         });
         // on pressing cancel button
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-public void onClick(DialogInterface dialog, int which) {
-        dialog.cancel();
-        }
+            public void onClick(DialogInterface dialog, int which) {
+             dialog.cancel();
+            }
         });
         // Showing Alert Message
         alertDialog.show();
