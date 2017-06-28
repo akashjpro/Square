@@ -1,12 +1,17 @@
 package com.example.tmha.square.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -54,6 +59,7 @@ public class CreateProjectAcivity extends AppCompatActivity
     private Button mBtnSelectFile, mBtnCapture;
     private final int REQUEST_CODE_FOLDER = 111;
     private final int REQUEST_CODE_CAPTURE = 112;
+    private final int PERMISSIONS_REQUEST_READ_EXTERNAL = 123;
     private int mId = -1;
     private int mPosition;
     private Bitmap mBitmap;
@@ -85,12 +91,52 @@ public class CreateProjectAcivity extends AppCompatActivity
         mBtnSelectFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*");
-                startActivityForResult(intent, REQUEST_CODE_FOLDER);
+                if (Build.VERSION.SDK_INT >= 23) {
+                    // Here, thisActivity is the current activity
+                    if (ContextCompat.checkSelfPermission(CreateProjectAcivity.this,
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+
+                        // Should we show an explanation?
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(CreateProjectAcivity.this,
+                                android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                            // Show an expanation to the user *asynchronously* -- don't block
+                            // this thread waiting for the user's response! After the user
+                            // sees the explanation, try again to request the permission.
+
+                        } else {
+
+                            // No explanation needed, we can request the permission.
+
+                            ActivityCompat.requestPermissions(CreateProjectAcivity.this,
+                                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    PERMISSIONS_REQUEST_READ_EXTERNAL);
+
+                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                            // app-defined int constant. The callback method gets the
+                            // result of the request.
+                        }
+                    } else {
+                        ActivityCompat.requestPermissions(CreateProjectAcivity.this,
+                                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                PERMISSIONS_REQUEST_READ_EXTERNAL);
+                    }
+                } else {
+
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, REQUEST_CODE_FOLDER);
+                }
+
+//                Intent intent = new Intent(Intent.ACTION_PICK,
+//                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                intent.setType("image/*");
+//                startActivityForResult(intent, REQUEST_CODE_FOLDER);
             }
         });
+
+
 
         mBtnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,7 +227,8 @@ public class CreateProjectAcivity extends AppCompatActivity
         mEdtStartTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                final DatePickerFragment pickerFragment = new DatePickerFragment();
+                final DatePickerFragment pickerFragment
+                        = new DatePickerFragment();
                 DatePickerFragment fragment
                         = (DatePickerFragment) getFragmentManager()
                         .findFragmentByTag("datePicker");
@@ -222,6 +269,28 @@ public class CreateProjectAcivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_READ_EXTERNAL ){
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, REQUEST_CODE_FOLDER);
+            } else {
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+            }
+            return;
+        }
+    }
 
     private File createImageFile() throws IOException {
         // Create an image file name

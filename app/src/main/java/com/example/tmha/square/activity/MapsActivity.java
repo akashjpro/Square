@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.tmha.square.R;
 import com.example.tmha.square.handler.FindDirection;
+import com.example.tmha.square.handler.GPSTracker;
 import com.example.tmha.square.listener.FindDirectionListener;
 import com.example.tmha.square.model.Route;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,8 +43,9 @@ public class MapsActivity extends FragmentActivity
     private List<Marker> mOriginMarkers = new ArrayList<>();
     private List<Marker> mDestinationMarkers = new ArrayList<>();
     private List<Polyline> mPolyline = new ArrayList<>();
-    private  ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
     private LatLng mMyLatLng;
+    private GPSTracker mGPS;
 
     GoogleMap.OnMyLocationChangeListener listenerLocationChange = new GoogleMap.OnMyLocationChangeListener() {
         @Override
@@ -223,7 +225,11 @@ public class MapsActivity extends FragmentActivity
 //                .title("Bến xe An Sương")
 //                .snippet("Tập chung xe vận chuyển")
 //                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_b)));
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -235,15 +241,24 @@ public class MapsActivity extends FragmentActivity
         }
         mMap.setMyLocationEnabled(true);
 
-        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+        mMap.setOnMyLocationButtonClickListener(
+                new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
-                if (mEdtOrigin.isFocused()){
-                    mEdtOrigin.setText(mMyLatLng.toString());
-                }else if (mEdtDestination.isFocused()){
-                    mEdtDestination.setText(mMyLatLng.toString());
-                }else {
-                    mEdtOrigin.setText(mMyLatLng.toString());
+                mGPS = new GPSTracker(MapsActivity.this);
+                if(mGPS.canGetLocation()){
+                    double latitude = mGPS.getLatitude();
+                    double longitude = mGPS.getLongitude();
+                    // \n is for new line
+                    Toast.makeText(getApplicationContext(),
+                            "Your Location is - \nLat: "
+                                    + latitude + "\nLong: "
+                                    + longitude, Toast.LENGTH_LONG).show();
+                }else{
+                    // can't get location
+                    // GPS or Network is not enabled
+                    // Ask user to enable GPS/network in settings
+                    mGPS.showSettingsAlert();
                 }
                 return false;
             }
@@ -263,6 +278,8 @@ public class MapsActivity extends FragmentActivity
 
 
     }
+
+
 
     @Override
     public void onBackPressed() {

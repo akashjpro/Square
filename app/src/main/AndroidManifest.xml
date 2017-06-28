@@ -29,7 +29,8 @@
         <activity android:name=".activity.LoginActivity"></activity>
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme" >
+        </activity>
         <activity
             android:name=".activity.CreateProjectAcivity"
             android:theme="@style/AppThemeActionBar" />
