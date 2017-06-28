@@ -20,4 +20,6 @@
     <color name="colorLoginButtonPress">#ce1bc5</color>
     <color name="colorLoginButtonFocus">#00ff2a</color>
     <color name="colorLoginButtonDefault">#cad632</color>
+
+    <color name="iron">#CCCCCC</color>
 </resources>

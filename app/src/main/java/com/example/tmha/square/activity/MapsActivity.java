@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback {
+        implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private EditText mEdtOrigin, mEdtDestination;
@@ -42,6 +43,25 @@ public class MapsActivity extends FragmentActivity
     private List<Marker> mDestinationMarkers = new ArrayList<>();
     private List<Polyline> mPolyline = new ArrayList<>();
     private  ProgressDialog mProgressDialog;
+    private LatLng mMyLatLng;
+
+    GoogleMap.OnMyLocationChangeListener listenerLocationChange = new GoogleMap.OnMyLocationChangeListener() {
+        @Override
+        public void onMyLocationChange(Location location) {
+            mMyLatLng = new LatLng(location.getLatitude(),
+                    location.getLongitude());
+            if(mMap != null){
+                mMap.clear();
+                mMap.addMarker(
+                        new MarkerOptions().position(mMyLatLng)
+                                .title("My location")
+                                .snippet("(" + mMyLatLng.latitude + mMyLatLng.longitude + ")"));
+                mMap.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(mMyLatLng, 16.0f));
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +89,13 @@ public class MapsActivity extends FragmentActivity
         final String origin = mEdtOrigin.getText().toString();
         final String destination = mEdtDestination.getText().toString();
         if (origin.isEmpty()) {
-            Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter origin address!",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
         if (destination.isEmpty()) {
-            Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter destination address!",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
             runOnUiThread(new Runnable() {
@@ -87,7 +109,8 @@ public class MapsActivity extends FragmentActivity
                             }
 
                             @Override
-                            public void onDirectionFinderSuccess(List<Route> routes) {
+                            public void onDirectionFinderSuccess(
+                                    List<Route> routes) {
                                 drawPolyline(routes);
                             }
                         }, origin, destination).execute();
@@ -102,7 +125,8 @@ public class MapsActivity extends FragmentActivity
 
     private void hadlerBeforeDraw() {
         mProgressDialog = ProgressDialog.show(this, "Please wait.",
-                "Finding...", true);
+                "Finding...", false);
+        mProgressDialog.setCanceledOnTouchOutside(true);
 
         if ( mOriginMarkers!= null) {
             for (Marker marker : mOriginMarkers) {
@@ -138,11 +162,13 @@ public class MapsActivity extends FragmentActivity
                     .setText(route.getmDistance().getmText());
 
             mOriginMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_a))
+                    .icon(BitmapDescriptorFactory
+                            .fromResource(R.drawable.ic_marker_a))
                     .title(route.getmStartAddress())
                     .position(route.getmStartLocation())));
             mDestinationMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_b))
+                    .icon(BitmapDescriptorFactory
+                            .fromResource(R.drawable.ic_marker_b))
                     .title(route.getmEndAddress())
                     .position(route.getmEndLocation())));
 
@@ -208,11 +234,41 @@ public class MapsActivity extends FragmentActivity
             return;
         }
         mMap.setMyLocationEnabled(true);
+
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                if (mEdtOrigin.isFocused()){
+                    mEdtOrigin.setText(mMyLatLng.toString());
+                }else if (mEdtDestination.isFocused()){
+                    mEdtDestination.setText(mMyLatLng.toString());
+                }else {
+                    mEdtOrigin.setText(mMyLatLng.toString());
+                }
+                return false;
+            }
+        });
+
+//        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+//        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//        double longitude = location.getLongitude();
+//        double latitude = location.getLatitude();
+//        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
+//        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+//            @Override
+//            public void onMapLoaded() {
+//                mMap.setOnMyLocationChangeListener(listenerLocationChange);
+//            }
+//        });
+
+
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        mProgressDialog.dismiss();
     }
+
+
+
 }

@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edtOrigin"
-        android:hint="Input origin address" />
+        android:hint="Start address" />
 
     <EditText
         android:textColorHint="#d2d2d2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Input destination address"
+        android:hint="End address"
         android:id="@+id/edtDestination" />
 
     <LinearLayout

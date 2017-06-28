@@ -85,7 +85,7 @@ public class FindDirection {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (!s.isEmpty()){
+            if ((s != null)) {
                 try {
                     parseJson(s);
                 } catch (JSONException e) {

@@ -26,12 +26,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppThemeActionBar">
+        <activity android:name=".activity.LoginActivity"></activity>
         <activity
-            android:name=".activity.LoginActivity">
-        </activity>
-        <activity
-            android:theme="@style/AppTheme"
-            android:name=".activity.MainActivity" />
+            android:name=".activity.MainActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.CreateProjectAcivity"
             android:theme="@style/AppThemeActionBar" />
@@ -49,20 +47,17 @@
 
         <activity
             android:name=".activity.MapsActivity"
-            android:label="@string/title_activity_maps" >
+            android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.DetailProjectActivity" />
-        <activity
-            android:name=".activity.CreateReportActivity" />
-        <activity
-            android:name=".activity.FullPhotoActivity" />
-        <activity
-            android:name=".activity.DetailReportActivity"></activity>
+        <activity android:name=".activity.DetailProjectActivity" />
+        <activity android:name=".activity.CreateReportActivity" />
+        <activity android:name=".activity.FullPhotoActivity" />
+        <activity android:name=".activity.DetailReportActivity" />
     </application>
 
 </manifest>
