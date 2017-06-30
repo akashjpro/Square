@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -33,6 +34,8 @@ public class DetailProjectActivity extends AppCompatActivity {
     ImageView mImgPhoto;
     ProgressBar mProgress;
 
+    LinearLayout mLayoutLocation;
+
     ArrayList<Report> mListReport;
     RecyclerView mRecyclerView;
     ReportAdapter mReportAdapter;
@@ -56,6 +59,16 @@ public class DetailProjectActivity extends AppCompatActivity {
     private void addEvents() {
         mTextProgress.setText(mProject.getmProgess() + "%");
         mProgress.setProgress(mProject.getmProgess());
+        mLayoutLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetailProjectActivity.this, MapsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("project", mProject);
+                intent.putExtra("bundle", bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     private void addControls() {
@@ -72,6 +85,7 @@ public class DetailProjectActivity extends AppCompatActivity {
         mImgPhoto       = (ImageView) findViewById(R.id.imgProject);
         mTextProgress   = (TextView) findViewById(R.id.txtProgress);
         mProgress       = (ProgressBar) findViewById(R.id.progress);
+        mLayoutLocation = (LinearLayout) findViewById(R.id.layoutViewLocation);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewListReport);
         LinearLayoutManager layoutManager

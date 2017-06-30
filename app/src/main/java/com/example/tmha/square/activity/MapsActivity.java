@@ -3,13 +3,14 @@ package com.example.tmha.square.activity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -25,7 +26,9 @@ import com.example.tmha.square.R;
 import com.example.tmha.square.handler.FindDirection;
 import com.example.tmha.square.handler.GPSTracker;
 import com.example.tmha.square.listener.FindDirectionListener;
+import com.example.tmha.square.model.Project;
 import com.example.tmha.square.model.Route;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,14 +40,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback{
+        implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private EditText mEdtOrigin, mEdtDestination;
@@ -58,13 +60,20 @@ public class MapsActivity extends FragmentActivity
     private Location mLocation;
     private Geocoder mGeocoder;
     private String mAddress;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationManager mLocationManager;
+    private Project mProject;
+    private String mOrigin;
+    private String mDestination;
+    private String mTile;
+
 
     GoogleMap.OnMyLocationChangeListener listenerLocationChange = new GoogleMap.OnMyLocationChangeListener() {
         @Override
         public void onMyLocationChange(Location location) {
             mMyLatLng = new LatLng(location.getLatitude(),
                     location.getLongitude());
-            if(mMap != null){
+            if (mMap != null) {
                 mMap.clear();
                 mMap.addMarker(
                         new MarkerOptions().position(mMyLatLng)
@@ -81,14 +90,16 @@ public class MapsActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mEdtOrigin      = (EditText) findViewById(R.id.edtOrigin);
+        mEdtOrigin = (EditText) findViewById(R.id.edtOrigin);
         mEdtDestination = (EditText) findViewById(R.id.edtDestination);
-        mBtnFind        = (Button) findViewById(R.id.btnFind);
+        mBtnFind = (Button) findViewById(R.id.btnFind);
 
         mBtnFind.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,42 +108,59 @@ public class MapsActivity extends FragmentActivity
             }
         });
 
+        Bundle bundle = getIntent().getBundleExtra("bundle");
+        if (bundle != null){
+            mProject = (Project) bundle.getSerializable("project");
+            mEdtDestination.setText(mProject.getmProjectName());
+        }
+
+
+
+
     }
 
+
     private void checkInput() {
-        final String origin = mEdtOrigin.getText().toString();
-        final String destination = mEdtDestination.getText().toString();
-        if (origin.isEmpty()) {
+        mOrigin= mEdtOrigin.getText().toString();
+        mDestination = mEdtDestination.getText().toString();
+        if (mOrigin.isEmpty()) {
             Toast.makeText(this, "Please enter origin address!",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        if (destination.isEmpty()) {
+        if (mDestination.isEmpty()) {
             Toast.makeText(this, "Please enter destination address!",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new FindDirection(new FindDirectionListener() {
-                            @Override
-                            public void onDirectionFinderStart() {
-                                hadlerBeforeDraw();
-                            }
 
-                            @Override
-                            public void onDirectionFinderSuccess(
-                                    List<Route> routes) {
-                                drawPolyline(routes);
-                            }
-                        }, origin, destination).execute();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+        if (mDestination.equals(mProject.getmProjectName())){
+            mDestination = mProject.getmLocation();
+            mTile = mProject.getmProjectName();
+        }else {
+            mTile = " ";
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    new FindDirection(new FindDirectionListener() {
+                        @Override
+                        public void onDirectionFinderStart() {
+                            hadlerBeforeDraw();
+                        }
+
+                        @Override
+                        public void onDirectionFinderSuccess(
+                                List<Route> routes) {
+                            drawPolyline(routes);
+                        }
+                    }, mOrigin, mDestination).execute();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-            });
+            }
+        });
 
 
     }
@@ -142,7 +170,7 @@ public class MapsActivity extends FragmentActivity
                 "Finding...", false);
         mProgressDialog.setCanceledOnTouchOutside(true);
 
-        if ( mOriginMarkers!= null) {
+        if (mOriginMarkers != null) {
             for (Marker marker : mOriginMarkers) {
                 marker.remove();
             }
@@ -155,7 +183,7 @@ public class MapsActivity extends FragmentActivity
         }
 
         if (mPolyline != null) {
-            for (Polyline polyline:mPolyline ) {
+            for (Polyline polyline : mPolyline) {
                 polyline.remove();
             }
         }
@@ -183,7 +211,8 @@ public class MapsActivity extends FragmentActivity
             mDestinationMarkers.add(mMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory
                             .fromResource(R.drawable.ic_marker_b))
-                    .title(route.getmEndAddress())
+                    .title(mTile)
+                    .snippet((route.getmEndAddress()))
                     .position(route.getmEndLocation())));
 
             PolylineOptions polylineOptions = new PolylineOptions().
@@ -198,7 +227,6 @@ public class MapsActivity extends FragmentActivity
         }
 
     }
-
 
 
     /**
@@ -218,7 +246,7 @@ public class MapsActivity extends FragmentActivity
         LatLng choTCH = new LatLng(10.859828, 106.618125);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(choTCH, 16));
-        mOriginMarkers.add(  mMap.addMarker(new MarkerOptions().position(choTCH)
+        mOriginMarkers.add(mMap.addMarker(new MarkerOptions().position(choTCH)
                 .title("Chợ Tân Chánh Hiệp")
                 .snippet("Nơi tập chung mua bán")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_a))));
@@ -253,73 +281,56 @@ public class MapsActivity extends FragmentActivity
         }
         mMap.setMyLocationEnabled(true);
 
-        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
-                mMyLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                mLocation = location;
-            }
-        });
+//        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+//            @Override
+//            public void onMyLocationChange(Location location) {
+//                mMyLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+//                mLocation = location;
+//            }
+//        });
 
         mGeocoder = new Geocoder(this, Locale.getDefault());
 
         mMap.setOnMyLocationButtonClickListener(
                 new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-
-//                try {
-//                    //ben thanh
-//                    List<Address> addresses
-//                            = mGeocoder.getFromLocation(10.784783, 106.687736, 1);
-//                    //bitexco
-//                    List<Address> addresses1
-//                            = mGeocoder.getFromLocation(10.772321, 106.704402, 1);
+                    @Override
+                    public boolean onMyLocationButtonClick() {
+                        click();
+//                if (checkLocation()){
+//                    mLocation= gps.getLocation();
+//                    if (mLocation != null){
+//                        try {
+//                            List<Address> addresses = mGeocoder
+//                                    .getFromLocation(mMyLatLng.latitude,
+//                                            mMyLatLng.longitude, 1);
+//                            for (int i=0; i<5; i++){
+//                                String address = addresses.get(0).getAddressLine(i);
+//                                if (address != null){
+//                                    if (mAddress != null){
+//                                        mAddress +=  address + " ";
+//                                    }else {
+//                                        mAddress =  address + " ";
+//                                    }
+//                                }
 //
-//                    JSONArray jsonArray = new JSONArray(addresses);
+//                            }
+//                            if (mEdtOrigin.isFocused()){
+//                                mEdtOrigin.setText(mAddress);
+//                            }else {
+//                                mEdtDestination.setText(mAddress);
+//                            }
 //
-//                    String s = jsonArray.toString();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
 //
-//
-//                    String city = addresses.get(0).getAdminArea();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
+//                    }
+//                }else {
+//                    showSettingsAlert();
 //                }
-
-                if (checkLocation()){
-                    if (mLocation != null){
-                        try {
-                            List<Address> addresses = mGeocoder
-                                    .getFromLocation(mMyLatLng.latitude,
-                                            mMyLatLng.longitude, 1);
-                            for (int i=0; i<5; i++){
-                                String address = addresses.get(0).getAddressLine(i);
-                                if (address != null){
-                                    if (mAddress != null){
-                                        mAddress +=  address + " ";
-                                    }else {
-                                        mAddress =  address + " ";
-                                    }
-                                }
-
-                            }
-                            if (mEdtOrigin.isFocused()){
-                                mEdtOrigin.setText(mAddress);
-                            }else {
-                                mEdtDestination.setText(mAddress);
-                            }
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
+                        return false;
                     }
-                }else {
-                    showSettingsAlert();
-                }
-                return false;
-            }
-        });
+                });
 
 //        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 //        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -344,48 +355,110 @@ public class MapsActivity extends FragmentActivity
         super.onBackPressed();
     }
 
-    public boolean checkLocation(){
+//    public boolean checkLocation(){
+//
+//        LocationManager locationManager
+//                = (LocationManager) getSystemService(LOCATION_SERVICE);
+//
+//        // getting GPS status
+//        boolean isGPSEnabled = locationManager
+//                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+//        // getting network status
+//        boolean isNetworkEnabled = locationManager
+//                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//
+//        if (isGPSEnabled ){
+//            return true;
+//        }
+//        return false;
+//    }
 
-        LocationManager locationManager
-                = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        // getting GPS status
-        boolean isGPSEnabled = locationManager
-                .isProviderEnabled(LocationManager.GPS_PROVIDER);
-        // getting network status
-        boolean isNetworkEnabled = locationManager
-                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        if (isGPSEnabled ){
-            return true;
+    public void click() {
+        if (!checkLocation()){
+            return;
         }
-        return false;
-    }
-
-
-    public void showSettingsAlert(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
-        // Setting Dialog Title
-        alertDialog.setTitle("GPS is settings");
-        // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-        // On pressing Settings button
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        });
-        // on pressing cancel button
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        // Showing Alert Message
-        alertDialog.show();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER, 60 * 1000, 10, locationListener);
     }
 
 
 
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            mLocation = location;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mEdtOrigin.setText("("+ mLocation.getLatitude() + ", "
+                            + mLocation.getLongitude() + ")");
+                    Toast.makeText(MapsActivity.this,
+                            "Network Provider update",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+    private boolean checkLocation() {
+        if(!isLocationEnabled())
+            showAlert();
+        return isLocationEnabled();
     }
+
+    private boolean isLocationEnabled() {
+        return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Enable Location")
+                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
+                        "use this app")
+                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+        dialog.show();
+    }
+
+
+
+
+
+}

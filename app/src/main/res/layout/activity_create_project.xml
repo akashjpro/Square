@@ -163,11 +163,42 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:text="Vi tri: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:minLines="3"
+                android:maxLines="3"
+                android:id="@+id/edtLocation"
+                android:background="@drawable/custom_boder_edittext"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnGetLocation"
+                android:layout_marginLeft="5dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/custom_button_login"
+                android:textAllCaps="false"
+                android:text="Lấy vị trí"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
                 android:text="Address: "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <EditText
+                android:minLines="3"
                 android:maxLines="2"
                 android:id="@+id/edtAddress"
                 android:background="@drawable/custom_boder_edittext"
@@ -190,14 +221,14 @@
                 android:layout_height="wrap_content" />
 
             <EditText
-                android:maxLines="10"
+                android:id="@+id/edtContentProject"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/custom_boder_edittext"
-                android:id="@+id/edtContentProject"
-                android:minLines="3"
                 android:inputType="textMultiLine"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:maxLines="10"
+                android:minLines="3" />
 
         </LinearLayout>
 
