@@ -5,13 +5,10 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:textColor="#fcfcfc"
-        android:gravity="center"
-        android:id="@+id/textView2"
-        android:textSize="40sp"
+    <fragment
+        android:id="@+id/fragMap"
+        android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Setting" />
+        android:layout_height="300dp" />
 
 </LinearLayout>
