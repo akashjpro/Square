@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tmha.square.R;
+import com.example.tmha.square.adapter.MapInforAdapter;
 import com.example.tmha.square.handler.FindDirection;
 import com.example.tmha.square.handler.GPSTracker;
 import com.example.tmha.square.listener.FindDirectionListener;
@@ -46,7 +47,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback {
+        implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
     private EditText mEdtOrigin, mEdtDestination;
@@ -66,25 +67,27 @@ public class MapsActivity extends FragmentActivity
     private String mOrigin;
     private String mDestination;
     private String mTile;
+    private static final String CURRENT_LOCATION = "Vị trí hiện tại";
+    private String mCurrentLocation;
 
 
-    GoogleMap.OnMyLocationChangeListener listenerLocationChange = new GoogleMap.OnMyLocationChangeListener() {
-        @Override
-        public void onMyLocationChange(Location location) {
-            mMyLatLng = new LatLng(location.getLatitude(),
-                    location.getLongitude());
-            if (mMap != null) {
-                mMap.clear();
-                mMap.addMarker(
-                        new MarkerOptions().position(mMyLatLng)
-                                .title("My location")
-                                .snippet("(" + mMyLatLng.latitude + mMyLatLng.longitude + ")"));
-                mMap.animateCamera(
-                        CameraUpdateFactory.newLatLngZoom(mMyLatLng, 16.0f));
-            }
-
-        }
-    };
+//    GoogleMap.OnMyLocationChangeListener listenerLocationChange = new GoogleMap.OnMyLocationChangeListener() {
+//        @Override
+//        public void onMyLocationChange(Location location) {
+//            mMyLatLng = new LatLng(location.getLatitude(),
+//                    location.getLongitude());
+//            if (mMap != null) {
+//                mMap.clear();
+//                mMap.addMarker(
+//                        new MarkerOptions().position(mMyLatLng)
+//                                .title("My location")
+//                                .snippet("(" + mMyLatLng.latitude + mMyLatLng.longitude + ")"));
+//                mMap.animateCamera(
+//                        CameraUpdateFactory.newLatLngZoom(mMyLatLng, 16.0f));
+//            }
+//
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +142,10 @@ public class MapsActivity extends FragmentActivity
             mTile = mProject.getmProjectName();
         }else {
             mTile = " ";
+        }
+
+        if (mOrigin.equals(CURRENT_LOCATION)){
+            mOrigin = mCurrentLocation;
         }
         runOnUiThread(new Runnable() {
             @Override
@@ -206,14 +213,18 @@ public class MapsActivity extends FragmentActivity
             mOriginMarkers.add(mMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory
                             .fromResource(R.drawable.ic_marker_a))
-                    .title(route.getmStartAddress())
+                    .title(mEdtOrigin.getText().toString())
+                    .snippet(route.getmStartAddress())
                     .position(route.getmStartLocation())));
             mDestinationMarkers.add(mMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory
                             .fromResource(R.drawable.ic_marker_b))
-                    .title(mTile)
+                    .title(mEdtDestination.getText().toString())
                     .snippet((route.getmEndAddress()))
                     .position(route.getmEndLocation())));
+
+            //mMap.setInfoWindowAdapter(new MapInforAdapter(MapsActivity.this, mProject));
+
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
@@ -246,11 +257,13 @@ public class MapsActivity extends FragmentActivity
         LatLng choTCH = new LatLng(10.859828, 106.618125);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(choTCH, 16));
-        mOriginMarkers.add(mMap.addMarker(new MarkerOptions().position(choTCH)
-                .title("Chợ Tân Chánh Hiệp")
-                .snippet("Nơi tập chung mua bán")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_a))));
-        LatLng benXeAnSuong = new LatLng(10.844015, 106.613571);
+        if (mProject != null) {
+            mOriginMarkers.add(mMap.addMarker(new MarkerOptions().position(choTCH)
+                    .title(mProject.getmProjectName())
+                    .snippet(mProject.getmAddress())
+            ));
+//            mMap.setInfoWindowAdapter(new MapInforAdapter(MapsActivity.this, mProject));
+        }
 //        mMap.addPolyline(new PolylineOptions().add(
 //                choTCH,
 //                new LatLng(10.850921, 106.628621),
@@ -295,7 +308,7 @@ public class MapsActivity extends FragmentActivity
                 new GoogleMap.OnMyLocationButtonClickListener() {
                     @Override
                     public boolean onMyLocationButtonClick() {
-                        click();
+                        getCurrentLocation();
 //                if (checkLocation()){
 //                    mLocation= gps.getLocation();
 //                    if (mLocation != null){
@@ -375,7 +388,7 @@ public class MapsActivity extends FragmentActivity
 
 
 
-    public void click() {
+    public void getCurrentLocation() {
         if (!checkLocation()){
             return;
         }
@@ -401,8 +414,9 @@ public class MapsActivity extends FragmentActivity
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mEdtOrigin.setText("("+ mLocation.getLatitude() + ", "
-                            + mLocation.getLongitude() + ")");
+                    mCurrentLocation = mLocation.getLatitude() + ", "
+                            + mLocation.getLongitude();
+                    mEdtOrigin.setText(CURRENT_LOCATION);
                     Toast.makeText(MapsActivity.this,
                             "Network Provider update",
                             Toast.LENGTH_SHORT).show();
@@ -458,7 +472,17 @@ public class MapsActivity extends FragmentActivity
     }
 
 
-
-
-
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String pathPic = mProject.getmProjectPhoto();
+        String address = marker.getSnippet();
+        if (!address.equals(mProject.getmAddress())){
+            pathPic = "http://www.wallpaperup.com/uploads/wallpapers/2016/07/02/994343/big_thumb_5b1bc79dc86b691f7ef251d83168143f.jpg";
+        }
+        Project project = new Project(marker.getTitle(),
+                pathPic, address, mProject.getmLocation());
+        mProject.setmAddress(marker.getSnippet());
+        mProject.setmProjectName(marker.getTitle());
+        mMap.setInfoWindowAdapter(new MapInforAdapter(MapsActivity.this, project));
+    }
 }

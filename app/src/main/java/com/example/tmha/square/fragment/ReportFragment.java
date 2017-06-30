@@ -182,8 +182,8 @@ public class ReportFragment extends Fragment
     @Override
     public void deleteItem(int position) {
         int id = mListReport.get(position).getmID();
-        boolean resultDeleteReport = database.deleteReport(null, String.valueOf(id));
-        if (resultDeleteReport){
+        //delete report with id project
+        database.deleteReport(null, String.valueOf(id));
         boolean result = database.deleteProject(String.valueOf(id));
             if(result) {
                 Toast.makeText(getActivity(), "Delete success", Toast.LENGTH_SHORT).show();
@@ -193,9 +193,6 @@ public class ReportFragment extends Fragment
             }else {
                 Toast.makeText(getActivity(), "Delete fail!!!", Toast.LENGTH_SHORT).show();
             }
-        }else {
-            Toast.makeText(getActivity(), "Delete fail!!!", Toast.LENGTH_SHORT).show();
-        }
     }
 
 

@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:scaleType="fitXY"
         android:id="@+id/imgPhoto"
         android:src="@drawable/binhkhanhbridge"
         android:layout_width="200dp"
@@ -27,11 +28,11 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btnViewLocation"
+        android:id="@+id/btnFindLocation"
         android:textColor="@android:color/white"
         android:background="@drawable/custom_button_facebook"
         android:textAllCaps="false"
-        android:text="Xem vi tri"
+        android:text="Xem đường đi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

@@ -23,6 +23,14 @@ public class Project implements Serializable {
     }
 
     public Project(String mProjectName, String mProjectPhoto,
+                   String mAddress, String mLocation) {
+        this.mProjectName = mProjectName;
+        this.mProjectPhoto = mProjectPhoto;
+        this.mAddress = mAddress;
+        this.mLocation = mLocation;
+    }
+
+    public Project(String mProjectName, String mProjectPhoto,
                    int mProgess, String mStartTime,
                    String mEndTime, String mProjectContent,
                    String mAddress, String mCreateBy,

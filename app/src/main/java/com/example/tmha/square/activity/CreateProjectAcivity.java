@@ -413,6 +413,7 @@ public class CreateProjectAcivity extends AppCompatActivity
                 mEdtAddress.setText(mProject.getmAddress());
                 mTxtProgress.setText(mProject.getmProgess() + "%");
                 mSeekBarProgress.setProgress(mProject.getmProgess());
+                mEdtLocation.setText(mProject.getmLocation());
             }
 
         }
