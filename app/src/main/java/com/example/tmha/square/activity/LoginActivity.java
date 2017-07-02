@@ -1,12 +1,11 @@
 package com.example.tmha.square.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,9 +52,15 @@ public class LoginActivity extends AppCompatActivity {
         mLayout     = (LinearLayout) findViewById(R.id.activity_login);
 
         getSupportActionBar().hide();
-        Animation animationTransApp = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.transition_right_left);
-        mTxtTitle.startAnimation(animationTransApp);
+        final TransitionDrawable transitionDrawable = (TransitionDrawable) mImgIcon.getDrawable();
+        transitionDrawable.startTransition(2000);
         Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                transitionDrawable.reverseTransition(2000);
+            }
+        },2000);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {

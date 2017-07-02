@@ -58,16 +58,24 @@
             android:layout_height="wrap_content" />
 
         <!--<ImageView-->
-            <!--android:layout_marginTop="30dp"-->
-            <!--android:src="@drawable/map_folded"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
+        <!--android:layout_marginTop="30dp"-->
+        <!--android:src="@drawable/map_folded"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
 
         <fragment
             android:id="@+id/fragMap"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="250dp" />
+
+        <TextView
+            android:textStyle="italic"
+            android:id="@+id/tv_hotline"
+            android:textColor="@android:color/holo_red_light"
+            android:text="Hotline: 0999888080"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

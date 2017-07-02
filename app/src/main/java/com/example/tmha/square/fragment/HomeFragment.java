@@ -7,6 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import com.example.tmha.square.R;
 import com.example.tmha.square.adapter.MapInforAdapter;
@@ -26,12 +29,13 @@ import java.util.List;
  */
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback{
-    View mView;
-    RecyclerView mRecyclerView;
-    List<Project> mListReport;
-    WorkHeadAdapter mWorkHeadAdapter;
-    MapFragment mapFragment;
-    GoogleMap mMap;
+    private View mView;
+    private RecyclerView mRecyclerView;
+    private List<Project> mListReport;
+    private WorkHeadAdapter mWorkHeadAdapter;
+    private MapFragment mapFragment;
+    private GoogleMap mMap;
+    private TextView mTvHoline;
 
 
     @Nullable
@@ -48,22 +52,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
      *
      */
     private void addControls() {
-
+        mTvHoline = (TextView) mView.findViewById(R.id.tv_hotline);
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.fragMap);
         mapFragment.getMapAsync(this);
 
-//        mRecyclerView = (RecyclerView) mView.findViewById(R.id.recyclerViewList);
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
-//                LinearLayoutManager.HORIZONTAL, false);
-//        mRecyclerView.setLayoutManager(layoutManager);
-//        mListReport = new ArrayList<>();
-//
-//        //get list all report from sqlite
-//        mListReport.addAll(database.getLimitproject(10, 0));
-//
-//        mWorkHeadAdapter = new WorkHeadAdapter(getActivity(), mListReport);
-//        mRecyclerView.setAdapter(mWorkHeadAdapter);
-
+        Animation animationHoline = AnimationUtils.loadAnimation(getActivity(), R.anim.transition_right_left);
+        mTvHoline.startAnimation(animationHoline);
     }
 
     @Override
